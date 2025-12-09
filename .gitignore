@@ -1,0 +1,4 @@
+# Conteúdo do arquivo .gitignore
+/langchain/
+__pycache__/
+*.pyc
