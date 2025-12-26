@@ -4,6 +4,7 @@ from langchain.globals import set_debug
 from pydantic import BaseModel, Field
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain.prompts import ChatPromptTemplate
+from operator import itemgetter
 
 llm = get_gemini_llm()
 set_debug(True)
@@ -30,11 +31,27 @@ modelo_cultural = ChatPromptTemplate.from_template(
     "Sugira atividades e locais culturais em {cidade}"
 )
 
+modelo_final = ChatPromptTemplate.from_messages(
+    [
+    ("ai", "Sugestão de viagem para a cidade: {cidade}"),
+    ("ai", "Restaurantes que você não pode perder: {restaurantes}"),
+    ("ai", "Atividades e locais culturais recomendados: {locais_culturais}"),
+    ("system", "Combine as informações anteriores em 2 parágrafos coerentes")
+    ]
+)
+
+
 parte1 = modelo_cidade | llm | parseador
 parte2 = modelo_restaurante | llm | StrOutputParser()
 parte3 = modelo_cultural | llm | StrOutputParser()
+parte4 = modelo_final | llm | StrOutputParser()
 
-cadeia = (parte1 | parte2 | parte3)
+cadeia = (parte1 | 
+          { "cidade": itemgetter("cidade"), 
+           "restaurantes": parte2, 
+           "locais_culturais": parte3 
+          } 
+        | parte4)
 
 try:
     resultado = cadeia.invoke({"interesse": "praias"})
