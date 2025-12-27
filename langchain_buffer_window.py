@@ -1,11 +1,7 @@
-from langchain_core.prompts import PromptTemplate
-from langchain.chains import LLMChain
 from langchain.chains import ConversationChain
 from gemini_setup import get_gemini_llm
 from langchain.globals import set_debug
-from langchain.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferWindowMemory
 
 llm = get_gemini_llm()
 set_debug(True)
@@ -19,7 +15,7 @@ mensagens = [
         "Na primeira cidade que você sugeriu lá atrás, quero saber 5 restaurantes para visitar. Responda somente o nome da cidade e o nome dos restaurantes.",
 ]
 
-memory = ConversationBufferMemory()
+memory = ConversationBufferWindowMemory(k=2)
 conversation = ConversationChain(llm=llm, verbose=True, memory=memory)
 
 for mensagem in mensagens:
