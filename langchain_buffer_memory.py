@@ -1,10 +1,7 @@
-from langchain_core.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from prompts_constants import PROMPT_CONVERSA_PT
 from langchain.chains import ConversationChain
 from gemini_setup import get_gemini_llm
 from langchain.globals import set_debug
-from langchain.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
 from langchain.memory import ConversationBufferMemory
 
 llm = get_gemini_llm()
@@ -20,7 +17,7 @@ mensagens = [
 ]
 
 memory = ConversationBufferMemory()
-conversation = ConversationChain(llm=llm, verbose=True, memory=memory)
+conversation = ConversationChain(llm=llm, verbose=True, memory=memory, prompt=PROMPT_CONVERSA_PT)
 
 for mensagem in mensagens:
     resposta = conversation.predict(input=mensagem)

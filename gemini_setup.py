@@ -21,7 +21,7 @@ def get_gemini_llm():
 
     # Inicializa o modelo
     llm = ChatGoogleGenerativeAI(
-        model="gemini-3-flash-preview", 
+        model="gemma-3-27b-it", 
         google_api_key=os.getenv("GEMINI_API_KEY"),
         
         # Otimização de requisições para evitar bloqueio
